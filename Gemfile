@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.3'
 gem 'pg'
 gem 'sass-rails', '~> 5.0'
@@ -13,7 +15,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 
 group :development, :test do
-
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
   gem 'pry'
   gem 'faker'
   gem 'awesome_print'
@@ -27,4 +30,13 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
+
+end
+
+group :test do
+    gem 'shoulda-matchers', '~> 3.0'
+    gem "capybara"
+    gem "database_cleaner"
+    gem "launchy"
+    gem "selenium-webdriver"
 end
