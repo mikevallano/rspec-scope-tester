@@ -17,6 +17,12 @@ RSpec.describe Project, type: :model do
 
     it { is_expected.to respond_to(:name) }
 
+    it {is_expected.to belong_to(:user)}
+
+    it "has a user" do
+      expect(project.user_id.present?).to be true
+    end
+
   end #valid project context
 
   context "with an invalid project" do
