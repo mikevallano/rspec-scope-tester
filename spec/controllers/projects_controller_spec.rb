@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe ProjectsController, type: :controller do
 
   let(:user) { FactoryGirl.create(:user) }
-  let(:project) { FactoryGirl.create(:project) }
+  let(:project) { FactoryGirl.create(:project, user_id: user.id) }
   let(:invalid_project) { FactoryGirl.create(:invalid_project) }
   let(:current_user) { login_with user }
   let(:invalid_user) { login_with nil }

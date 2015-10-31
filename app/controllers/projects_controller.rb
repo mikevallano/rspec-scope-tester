@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
+  before_action :my_projects, only: [:show, :edit, :update, :destroy]
+  before_action :set_project, only: [:show, :edit, :update, :destroy]
 
   # GET /projects
   # GET /projects.json
@@ -72,5 +73,12 @@ class ProjectsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def project_params
       params.require(:project).permit(:name, :description, :notes)
+    end
+
+    def my_projects
+      set_project
+      unless @project.user = current_user
+        redirect_to projects_url, notice: "You can't muck with another user's project."
+      end
     end
 end
