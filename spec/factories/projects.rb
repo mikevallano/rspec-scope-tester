@@ -1,8 +1,12 @@
 FactoryGirl.define do
   factory :project do
-    name "MyString"
-description "MyString"
-notes "MyString"
+    name { Faker::Hacker.ingverb }
+    description { Faker::Hacker.say_something_smart }
+    notes { Faker::Hacker.adjective }
+
+    factory :invalid_project do
+      name nil
+    end
   end
 
 end
