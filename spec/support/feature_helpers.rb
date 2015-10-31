@@ -18,4 +18,11 @@ module FeatureHelpers
     fill_in 'Password', with: user.password
     click_button 'Log in'
   end
+
+  def create_project
+    click_link 'Projects'
+    click_link 'New Project'
+    fill_in 'Name', with: 'zorro'
+    click_button "Create Project"
+  end
 end

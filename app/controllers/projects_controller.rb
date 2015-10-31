@@ -76,8 +76,8 @@ class ProjectsController < ApplicationController
     end
 
     def my_projects
-      set_project
-      unless @project.user = current_user
+      @project = Project.find(params[:id])
+      unless @project.user_id == current_user.id
         redirect_to projects_url, notice: "You can't muck with another user's project."
       end
     end
