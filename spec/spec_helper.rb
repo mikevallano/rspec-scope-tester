@@ -1,4 +1,7 @@
-require_relative 'support/controller_helpers'
+# Dir[("spec/support/**/*.rb")].each {|f| require f.gsub('spec/', '').gsub('.rb', '')}
+
+require 'support/controller_helpers'
+require 'support/feature_helpers'
 require 'devise'
 require 'shoulda-matchers'
 

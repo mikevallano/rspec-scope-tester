@@ -4,6 +4,10 @@ RSpec.describe Project, type: :model do
   let(:project) { FactoryGirl.build(:project) }
   let(:invalid_project) { FactoryGirl.build(:invalid_project) }
 
+  it "Project responds to #by_user" do
+      expect(Project).to respond_to(:by_user)
+    end
+
   context "with valid project" do
     it "is a valid factory" do
       expect(project).to be_valid
