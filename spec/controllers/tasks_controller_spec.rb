@@ -23,137 +23,236 @@ RSpec.describe TasksController, type: :controller do
   # This should return the minimal set of attributes required to create a valid
   # Task. As you add validations to Task, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
-  }
+  let(:user) { FactoryGirl.create(:user) }
+  let(:task) { FactoryGirl.create(:task) }
+  let(:invalid_task) { FactoryGirl.build(:invalid_task) }
+  let(:current_user) { login_with(user) }
+  let(:invalid_user) { login_with(nil) }
+  let(:valid_attributes) { FactoryGirl.attributes_for(:task) }
+  let(:invalid_attributes) { FactoryGirl.attributes_for(:invalid_task) }
 
-  let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
-  }
+  shared_examples_for "with a logged in user" do
 
-  # This should return the minimal set of values that should be in the session
-  # in order to pass any filters (e.g. authentication) defined in
-  # TasksController. Be sure to keep this updated too.
-  let(:valid_session) { {} }
-
-  describe "GET #index" do
-    it "assigns all tasks as @tasks" do
-      task = Task.create! valid_attributes
-      get :index, {}, valid_session
-      expect(assigns(:tasks)).to eq([task])
-    end
-  end
-
-  describe "GET #show" do
-    it "assigns the requested task as @task" do
-      task = Task.create! valid_attributes
-      get :show, {:id => task.to_param}, valid_session
-      expect(assigns(:task)).to eq(task)
-    end
-  end
-
-  describe "GET #new" do
-    it "assigns a new task as @task" do
-      get :new, {}, valid_session
-      expect(assigns(:task)).to be_a_new(Task)
-    end
-  end
-
-  describe "GET #edit" do
-    it "assigns the requested task as @task" do
-      task = Task.create! valid_attributes
-      get :edit, {:id => task.to_param}, valid_session
-      expect(assigns(:task)).to eq(task)
-    end
-  end
-
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new Task" do
-        expect {
-          post :create, {:task => valid_attributes}, valid_session
-        }.to change(Task, :count).by(1)
+    describe "GET #index" do
+      it "assigns all tasks as @tasks" do
+        get :index
+        expect(assigns(:tasks)).to eq([task])
       end
 
-      it "assigns a newly created task as @task" do
-        post :create, {:task => valid_attributes}, valid_session
-        expect(assigns(:task)).to be_a(Task)
-        expect(assigns(:task)).to be_persisted
-      end
-
-      it "redirects to the created task" do
-        post :create, {:task => valid_attributes}, valid_session
-        expect(response).to redirect_to(Task.last)
+      it "renders the index template" do
+        get :index
+        expect(response).to render_template(:index)
       end
     end
 
-    context "with invalid params" do
-      it "assigns a newly created but unsaved task as @task" do
-        post :create, {:task => invalid_attributes}, valid_session
+    describe "GET #show" do
+      it "assigns the requested task as @task" do
+        get :show, {:id => task.to_param}
+        expect(assigns(:task)).to eq(task)
+      end
+
+      it "renders the show template" do
+        get :show, {:id => task.to_param}
+        expect(response).to render_template(:show)
+      end
+    end
+
+    describe "GET #new" do
+      it "assigns a new task as @task" do
+        get :new
         expect(assigns(:task)).to be_a_new(Task)
       end
 
-      it "re-renders the 'new' template" do
-        post :create, {:task => invalid_attributes}, valid_session
-        expect(response).to render_template("new")
+      it "renders the new template" do
+        get :new
+        expect(response).to render_template(:new)
       end
     end
-  end
 
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
-
-      it "updates the requested task" do
-        task = Task.create! valid_attributes
-        put :update, {:id => task.to_param, :task => new_attributes}, valid_session
-        task.reload
-        skip("Add assertions for updated state")
-      end
-
+    describe "GET #edit" do
       it "assigns the requested task as @task" do
-        task = Task.create! valid_attributes
-        put :update, {:id => task.to_param, :task => valid_attributes}, valid_session
+        get :edit, {:id => task.to_param}
         expect(assigns(:task)).to eq(task)
       end
 
-      it "redirects to the task" do
-        task = Task.create! valid_attributes
-        put :update, {:id => task.to_param, :task => valid_attributes}, valid_session
-        expect(response).to redirect_to(task)
+      it "renders the edit template" do
+        get :edit, {:id => task.to_param}
+        expect(response).to render_template(:edit)
       end
     end
 
-    context "with invalid params" do
-      it "assigns the task as @task" do
-        task = Task.create! valid_attributes
-        put :update, {:id => task.to_param, :task => invalid_attributes}, valid_session
-        expect(assigns(:task)).to eq(task)
+    describe "POST #create" do
+      context "with valid params" do
+        it "creates a new Task" do
+          expect {
+            post :create, {:task => valid_attributes}
+          }.to change(Task, :count).by(1)
+        end
+
+        it "assigns a newly created task as @task" do
+          post :create, {:task => valid_attributes}
+          expect(assigns(:task)).to be_a(Task)
+          expect(assigns(:task)).to be_persisted
+        end
+
+        it "redirects to the created task" do
+          post :create, {:task => valid_attributes}
+          expect(response).to redirect_to(Task.last)
+        end
       end
 
-      it "re-renders the 'edit' template" do
-        task = Task.create! valid_attributes
-        put :update, {:id => task.to_param, :task => invalid_attributes}, valid_session
-        expect(response).to render_template("edit")
+      context "with invalid params" do
+        it "assigns a newly created but unsaved task as @task" do
+          post :create, {:task => invalid_attributes}
+          expect(assigns(:task)).to be_a_new(Task)
+        end
+
+        it "re-renders the 'new' template" do
+          post :create, {:task => invalid_attributes}
+          expect(response).to render_template("new")
+        end
       end
     end
-  end
 
-  describe "DELETE #destroy" do
-    it "destroys the requested task" do
-      task = Task.create! valid_attributes
-      expect {
-        delete :destroy, {:id => task.to_param}, valid_session
-      }.to change(Task, :count).by(-1)
+    describe "PUT #update" do
+      context "with valid params" do
+        let(:new_attributes) { FactoryGirl.attributes_for(:task, name: "newname") }
+
+        it "updates the requested task" do
+          put :update, {:id => task.to_param, :task => new_attributes }
+          task.reload
+          expect(task.name).to eq("newname")
+        end
+
+        it "assigns the requested task as @task" do
+          put :update, {:id => task.to_param, :task => new_attributes }
+          expect(assigns(:task)).to eq(task)
+        end
+
+        it "redirects to the task" do
+          put :update, {:id => task.to_param, :task => new_attributes }
+          expect(response).to redirect_to(task)
+        end
+      end
+
+      context "with invalid params" do
+        it "assigns the task as @task" do
+          put :update, {:id => task.to_param, :task => invalid_attributes }
+          expect(assigns(:task)).to eq(task)
+        end
+
+        it "re-renders the 'edit' template" do
+          put :update, {:id => task.to_param, :task => invalid_attributes }
+          expect(response).to render_template("edit")
+        end
+      end
     end
 
-    it "redirects to the tasks list" do
-      task = Task.create! valid_attributes
-      delete :destroy, {:id => task.to_param}, valid_session
-      expect(response).to redirect_to(tasks_url)
+    describe "DELETE #destroy" do
+      it "destroys the requested task" do
+        expect {
+          delete :destroy, {:id => task.to_param}
+        }.to change(Task, :count).by(-1)
+      end
+
+      it "redirects to the tasks list" do
+        delete :destroy, {:id => task.to_param}
+        expect(response).to redirect_to(tasks_url)
+      end
     end
-  end
+
+  end #logged in user shared_example
+
+  shared_examples_for "an invalid user trying to access" do
+    describe "GET #index" do
+      it "redirects user to sign up page" do
+        get :index
+        expect(response).to redirect_to(new_user_session_path)
+      end
+      # it { is_expected.to redirect_to new_user_session_path }
+    end
+
+    describe "GET #show" do
+      it "redirects user to sign up page" do
+        get :show, {:id => task.to_param}
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    describe "GET #new" do
+      it "redirects user to sign up page" do
+        get :new
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    describe "GET #edit" do
+      it "redirects user to sign up page" do
+        get :edit, {:id => task.to_param}
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+
+    describe "POST #create" do
+      context "with valid params" do
+        it "redirects user to sign up page" do
+          post :create, {:task => valid_attributes}
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+
+      context "with invalid params" do
+        it "redirects user to sign up page" do
+          post :create, {:task => invalid_attributes}
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    describe "PUT #update" do
+      context "with valid params" do
+        let(:new_attributes) { FactoryGirl.attributes_for(:task, name: "newname") }
+
+        it "redirects user to sign up page" do
+          put :update, {:id => task.to_param, :task => new_attributes }
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+
+      context "with invalid params" do
+        it "redirects user to sign up page" do
+          put :update, {:id => task.to_param, :task => invalid_attributes }
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    describe "DELETE #destroy" do
+      it "redirects user to sign up page" do
+        delete :destroy, {:id => task.to_param}
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+  end #invalid user shared examples
+
+  describe "user access" do
+    before :each do
+      current_user
+      task
+    end
+
+    it_behaves_like 'with a logged in user'
+  end #user access describe
+
+  describe "invalid user access" do
+    before :each do
+      invalid_user
+      task
+    end
+
+    it_behaves_like 'an invalid user trying to access'
+  end #user access describe
 
 end
