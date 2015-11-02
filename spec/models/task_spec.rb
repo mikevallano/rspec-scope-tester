@@ -5,6 +5,12 @@ RSpec.describe Task, type: :model do
   let(:complete_task) { FactoryGirl.build(:complete_task) }
   let(:invalid_task) { FactoryGirl.build(:invalid_task) }
 
+  it "allows stubbing" do #just for testing purposes
+    faketask = double(Task.new)
+    allow(faketask).to receive(:name).and_return("test task")
+    expect(faketask.name).to eq("test task")
+  end
+
   context "with a valid task" do
     it "has a valid factory" do
       expect(task).to be_valid

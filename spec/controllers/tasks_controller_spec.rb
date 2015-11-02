@@ -240,6 +240,7 @@ RSpec.describe TasksController, type: :controller do
   describe "user access" do
     before :each do
       current_user
+      # login_with(user)
       task
     end
 
@@ -249,6 +250,7 @@ RSpec.describe TasksController, type: :controller do
   describe "invalid user access" do
     before :each do
       invalid_user
+      # login_with(nil)
       task
     end
 
