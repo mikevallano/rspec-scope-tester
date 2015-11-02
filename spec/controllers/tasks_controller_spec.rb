@@ -33,7 +33,7 @@ RSpec.describe TasksController, type: :controller do
 
   shared_examples_for "with a logged in user" do
 
-    describe "GET #index" do
+    describe "GET #index", taco: true do #taco is a tag, which can be run with rspec --tag taco
       it "assigns all tasks as @tasks" do
         get :index
         expect(assigns(:tasks)).to eq([task])
